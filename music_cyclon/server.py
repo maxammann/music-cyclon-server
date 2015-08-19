@@ -6,6 +6,7 @@ from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.wsgi import WSGIContainer
 from beets import Library
+import tornado.options
 
 app = Flask(__name__)
 
@@ -57,9 +58,15 @@ def site_map():
 
 
 def run():
+    tornado.options.parse_command_line()
+
     global library
     library = Library("/media/data/music/library.db", "/media/music/library/")
 
+    port = 5785
+
+    print("Staring server on port {}".format(port))
+
     http_server = HTTPServer(WSGIContainer(app))
-    http_server.listen(5000)
+    http_server.listen(port)
     IOLoop.instance().start()
